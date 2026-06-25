@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>safe haven — rglr</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #090807;
+      color: #d8c6ad;
+      font-family: "Courier New", Courier, monospace;
+      letter-spacing: 0.02em;
+    }
+
+    .page {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 70px 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      text-align: center;
+    }
+
+    img {
+      width: 220px;
+      max-width: 70vw;
+      margin-bottom: 34px;
+      opacity: 0.94;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: normal;
+      text-transform: lowercase;
+      color: #e2ccb0;
+    }
+
+    .artist {
+      margin-top: 8px;
+      margin-bottom: 46px;
+      font-size: 12px;
+      color: #a69076;
+    }
+
+    .tracklist {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .track {
+      background: none;
+      border: none;
+      color: #c8b191;
+      font-family: inherit;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 0;
+      opacity: 0.78;
+      transition: opacity 0.2s ease, color 0.2s ease;
+    }
+
+    .track:hover {
+      opacity: 1;
+      color: #ead8bd;
+    }
+
+    .lyrics-view {
+      display: none;
+      text-align: center;
+      max-width: 620px;
+      margin: 0 auto;
+    }
+
+    .back {
+      background: none;
+      border: none;
+      color: #9c876f;
+      font-family: inherit;
+      font-size: 12px;
+      cursor: pointer;
+      margin-bottom: 40px;
+      padding: 0;
+    }
+
+    .back:hover {
+      color: #e2ccb0;
+    }
+
+    .song-title {
+      text-align: center;
+      font-size: 16px;
+      font-weight: normal;
+      margin-bottom: 44px;
+      color: #e2ccb0;
+    }
+
+    .lyrics {
+      white-space: pre-wrap;
+      line-height: 2.15;
+      font-size: 14px;
+      color: #d6bea0;
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        padding: 45px 18px;
+      }
+
+      .lyrics {
+        font-size: 13px;
+        line-height: 2.05;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="container" id="home">
+      <img src="cover.jpg" alt="safe haven cover art" />
+
+      <h1>safe haven</h1>
+      <div class="artist">rglr</div>
+
+      <div class="tracklist" id="tracklist"></div>
+    </section>
+
+    <section class="lyrics-view" id="lyricsView">
+      <button class="back" onclick="goBack()">← back</button>
+      <h2 class="song-title" id="songTitle"></h2>
+      <div class="lyrics" id="lyricsText"></div>
+    </section>
+  </main>
+
+  <script>
+    const songs = [
+      {
+        title: "hiss & hums",
+        lyrics: `Growing up gon' be okay
+Lot a fuck shit and a colorful problem
+I'll talk to anyone but God
+Sold my soul in the middle of the
+I started hearing my lie
+My story, here's my lecture
+Start shit then, get fucked up
+I started hearing my lie
+Start shit then, get fucked up
+Start shit then I get real fucked up
+I started hearing my lie
+Start shit then I get real fucked up
+My story, here's my lecture
+My story
+My story, here's my lecture
+Shit get rough, I might just text you
+When did I get so attached
+All I'm saying, I'm tryna fix things
+Leave my past inside a ditch please
+Why I ate a pound of dirt
+That's why my soul been getting so heavy
+Hiss & hums, we can't just fix things
+Bite my tongue and wish you well
+Call my phone girl, I can't text you
+Find myself, I found my hell
+Feed myself a part of my dream
+Why am I asking for help
+Find myself, I found my hell
+Why am I asking for help
+Why am I asking for help`
+      },
+      {
+        title: "old news",
+        lyrics: `Old news
+Fold the paper up like
+Old news
+I was-I was seeing white and it was
+Old news
+Pocket getting wider, fuck the old news
+Damn, why'd it get so quiet?
+Hit rewind
+Miss the Yu-Gi-Oh day when shit was simple
+Now everything a symbol
+Focusrite, I see you there
+Spent like 5g, where'd you go
+Why the fuck it feel like you here
+Why the fuck you care, she was old
+Old news
+Fold the paper up like
+Old news
+I was-I was seeing white and it was
+Old news
+Pocket getting wider, fuck the old news
+Damn, why'd it get so quiet?
+Hit rewind
+Do you really feel mine
+Side to side
+I like it side to side
+At the ceremony
+I'm too scared of honey, I don't know where it fall to
+I'm afraid of penitentiary, I'll see where my heart go
+My heart gold
+And it's filled with glut and a lot of sin
+I don't want another mission, bring me one more medicine
+Just let me bring the bag home
+Why the fuck you ask me where the fuck the evidence is?
+I give, I give, I go
+Miss the Yu-Gi-Oh day when shit was simple
+Now everything a symbol
+See you there
+Played it confidential
+Why you leave me there
+Cause it's been been in head
+Why haven't you left
+W-Why haven't you left (See you, why I see you)
+W-Why haven't you left (See you, why I see you)
+W-Why haven't you left (See you)
+Why haven't you left (Why I see you)
+Why haven't you
+Old news
+Fold the paper up like
+Old news
+I was-I was seeing white and it was
+Old news
+Pocket getting wider, fuck the old news
+Damn, why'd it get so quiet?
+Hit rewind
+Hit rewind
+Hit rewind
+Side to side
+I like it side to side
+Side to side
+Side to side
+Side to side`
+      },
+      {
+        title: "demon",
+        lyrics: `No no no, no no no
+No no no, no no no
+Fuck the check, I want a demon
+Outside bro I got the fleet and
+No no no, no no no
+No no no, no no no
+Fuck the check, I want a demon
+Outside bro I got the fleet and
+You’re like oxygen, I’m feinin for you
+I don’t want it
+Like my occupation, I don’t need it
+I fall for it
+Too much preservation, whatchu tryna bleed me for
+No more flex evasion, I just want a plenty full
+Too much smoke, you need a reservation
+Pay me full
+Blow me off, I don’t need it
+Pour me four, fuck the liter
+No no no, no no no
+No no no, no no no
+Fuck the check, I want a demon
+Outside bro I got the fleet and
+Cognition fuck my headspace
+I’m like Uzi I’m in backspace
+Call my phone girl I won’t pick up cause you know that I’m on MySpace
+Cognition fuck my headspace
+I’m like Uzi I’m in backspace
+Call my phone girl I won’t pick up cause you know that I’m on MySpace
+Pick up the phone
+I won’t call you
+Not you
+I want all of you
+I knew
+I fall on you
+When you’re high too
+Am I bothering you?
+Got no time for it
+Was mine on it
+But you gon’ be so near
+Supposed to be here
+Times my dear
+Times by ten
+It’s gonna bend
+This new life imma endure
+Im a stillborn blood still I’m born
+Still torn
+Pierce through the sharp torn
+I’m a dark force price through the sharp thorn
+When the world wills me I see clearly
+Got the blood on my tee
+from the tee to my feet
+It’s dripping
+Still healing
+Slash on the achilles
+I’m kneeling
+No no no, no no no
+No no no, no no no
+Fuck the check, I want a demon
+Fuck the check, I want a demon
+Fuck the check, I want a demon
+Fuck the check, I want a demon
+Fuck the check, I want a demon
+Fuck the check, I want a demon
+Fuck the check, I want a demon
+Fuck the check, I want a demon
+Fuck the check, I want a demon
+Fuck the check, I want a demon
+Fuck the check, I want a demon`
+      },
+      {
+        title: "troubles",
+        lyrics: `Pocket, green as shit
+I'm on that greed shit
+Fuck another apology
+It don't make no sense to me
+It don't make no sense
+It don't make no sense to me
+It don't make no sense to me
+It don't make no sense to me
+Fuck 666, I like cross
+Gotta figure out
+Is it best for me
+I grieve, I fall, I crawl out
+You leave I don't know where I'm at
+I cannot bless the water
+Took a different lane, it made more sense to me
+Momma always right, she told me money don't really grow on tree
+Took a minute figure out
+Do you get it now? It's true to me
+Smoking loud, no truancy
+Landisi, fuck with me
+Pull up like DC, you know we avenge your ass
+Fuck Karen, I like the Bass
+Opp shit, we fired up
+Like 200 on the digi dash, I'm like the Flash
+Like no sob story, I froze time ago
+Time, where'd it go
+My mind, vertical
+My eyes, ain't wrong
+My mind stay full
+Pocket, green as shit
+I'm on that greed shit
+Fuck another apology
+It don't make no sense to me
+It don't make no sense to me
+It don't make no sense to me
+It don't make no
+It don't make no sense to me
+It don't make no sense to me
+It don't make no sense to me
+Fuck 666, I like cross
+Gotta figure out
+Is it best for me
+I grieve, I fall, I crawl out
+You leave I don't know where I'm at
+I cannot bless the water
+Took a different lane, it made more sense to me
+Momma always right, she told me money don't really grow on tree
+Do you get it now? It's true to me
+Smoking loud, no truancy
+Pull up like DC, you know
+Fuck Karen, I like the Bass
+Opp shit, we
+Like 200, like 2 2 2`
+      },
+      {
+        title: "it gets so loud",
+        lyrics: `It get so loud, it get so loud
+Like whatchu try to say
+Am I A' Okay
+Am I-Am I A' Okay
+Too much talkin' girl
+But I don't really wanna break
+Am I A' Okay
+Am I-Am I Okay
+Am I
+It get so loud, it get so loud
+Like whatchu try to say
+Am I A' Okay
+Am I-Am I A' Okay
+Too much talkin' girl
+But I don't really wanna break
+Am I A' Okay
+Am I-Am I Okay
+Am I
+Whatchu try to say
+Like whatchu try to say
+I'm a cold visionary
+And it's a backwards kinda day
+Need two more backwood, face the day
+Two more, two more backwood, face the day
+Call my home at the cemetery
+I pray I won't be late
+You're gone
+I face my soul
+You call my phone
+Yes I, yes I am okay
+You're gone
+I face my soul
+You call my phone
+Yes I, yes I am okay
+Am I-Am I A' Okay
+Am I-Am I A' Okay
+Am I-Am I A' Okay
+Yes, I am
+Am I-Am I A' Okay
+Am I-Am I A' Okay
+Am I-Am I A' Okay
+Yes, I am Okay
+Write a whole story, typo
+Won't throw it away
+Fuck around on the mic, and
+That's my favorite day
+I found love in 808s
+Hats, claps, and drank
+Thank Che
+I'm a ear drummer
+I'm a ear drummer
+Whatchu try to say
+Like whatchu try to say
+I'm a cold visionary
+And it's a backwards kinda day`
+      },
+      {
+        title: "greed",
+        lyrics: `I guarantee you, I was just here to medium
+KOD, like a Carti, I don lost my home now
+I don't got a Balmain jean
+But I ask my brother
+And he got it hooked up with a whole lotta
+Whole lotta, whole lotta greed, I got
+Whole lotta, whole lotta, whole lotta, greed,
+I got all the clothes, all the clothes, all the clothes up in Neiman, I don't want it
+Neiman, I don't want it
+Need it, I don't want it
+Whatchu want? Whatchu want? Whatchu want? Say sum
+Throw it in my face, I could pour another one
+Photo seventh sesh, she might toke another one
+I'm like
+I don't wanna attention, I just wanna see yourself
+Feel sorrow inside my bedroom
+Am I really star now?
+I think I'm in the ceiling
+No feature, no feature
+And my water crispy like the Fiji
+No ice on my wrist so I gotta keep an eye out
+Light my lantern, turn it into heart
+Light my lantern, turn it into heart
+Like my lifeline, put it yea on dark
+Like my lifeline, put it yea on dark
+I guarantee you, I was just here to medium
+KOD, like a Carti, I don lost my home now
+I don't got a Balmain jean
+But I ask my brother
+And he got it hooked up with a whole lotta
+Whole lotta, whole lotta greed, I got
+Whole lotta, whole lotta, whole lotta, greed,
+I got all the clothes, all the clothes, all the clothes up in Neiman, I don't want it
+Neiman, I don't want it
+Need it, I don't want it
+Whatchu want? Whatchu want? Whatchu want? Say sum
+Throw it in my face, I could pour another one
+Photo seventh sesh, she might toke another one
+I'm like
+I don't wanna attention, I just wanna see yourself
+Feel sorrow inside my bedroom
+Am I really star now?
+I think I'm in the ceiling
+No feature, no feature
+And my water crispy like the Fiji
+No ice on my wrist so I gotta keep an eye out
+Guarantee you, I was just here to medium
+KOD, like a Carti, I don' lost my home now
+I don't got a Balmain jean
+But I ask my brother
+And he got it hooked up with a whole lotta
+Whole lotta, whole lotta greed, I got
+Whole lotta, whole lotta, whole lotta, greed,
+I got all the clothes, all the clothes, all the clothes up in Neiman, I don't want it
+Neiman, I don't want it
+Need it, I don't want it
+Whole lotta, whole lotta greed, I got
+Whole lotta, whole lotta, whole lotta, greed,
+I got all the clothes, all the clothes, all the clothes up in Neiman, I don't want it
+Neiman, I don't want it
+Need it, I don't want it
+Whatchu want? Whatchu want? Whatchu want? Say sum
+Throw it in my face, I could pour another one
+Photo seventh sesh, she might toke another one
+I'm like
+I don't wanna attention, I just wanna see yourself
+Feel sorrow inside my bedroom
+Am I really star now?
+I think I'm in the ceiling
+No feature, no feature
+And my water crispy like the Fiji
+No ice on my wrist so I gotta keep an eye out`
+      },
+      {
+        title: "office screen",
+        lyrics: `You got 4g at your house
+Roll up 5 jeeter, why it feel like a bounce
+Call up Saturn, he got 7 ring
+We go even rounds
+I ain't far sighted but I see through bands
+Got the clear eyes
+Fuck this office screen, I had to realize
+Can't call me loved boy, you know I hang around with mean guys
+Fuck a G-wagon, I just want a Lotus
+You already know this
+You hardly notice
+Care a lot
+Care enough
+More just to feel some
+More just to feel some
+Care a lot
+Care enough
+More just to feel some
+More just to feel some
+Thank you nine
+Can't ignore it, a lot of change
+Took two more just to feel some
+One more just to feel some
+Cant ignore it, a lot of change
+Took one more just to feel some
+One more just to feel some
+More just to be alright
+More just to be alright
+Care a lot
+Care enough
+More just to feel some
+More just to feel some
+Care a lot
+Care enough
+More just to feel some
+More just to feel some`
+      },
+      {
+        title: "birthday",
+        lyrics: `Don't ask for much even on my birthday
+Straight pain, always figure it out
+I was waiting for your call
+Now I don't miss your ringtone
+I was praying for the ball
+Now I'm praying for the bankroll
+Where'd the hate go? It's just you and me
+I don't wanna make love, I just want a Ksubi girl
+Why you sue me? Girl
+Is this a robbery?
+Just come vibe with me
+But don't die for me
+Away I go and I fall
+If you check my vision then you know it's 20/20
+No way I cannot give up
+Taking up my time at the Raf store
+You not a rap star
+You know you leave the trash in the back
+Your girl told me this
+She was sitting on my lap
+Run a lap, I'm a track star
+She attractive but she got a lot of baggage
+Yea and don't got a carry on
+Carry on, let it go
+Fuck a cake, I got lot of options
+Sold my soul at Barney I was 13, look at progress
+They like why you smoke so loud, now I gotta deal with nonsense
+Turn your speaker up
+You can't beat around the bush, you gotta make a change
+Tell bro keep it straight
+We gon' laugh it off till bank
+You gotta laugh it off or face the mirror
+Don't try to shoot me down, I got my Vector
+Won't catch me blicked up, got a lot to say
+Let's take a photo break
+Fly as shit
+Know I praise Bayern
+I'm loyal till the end
+I'm loyal till the end
+Don't ask for much even on my birthday
+Straight pain, always figure it out
+I was waiting for your call
+Now I don't miss your ringtone
+I was praying for the ball
+Now I'm praying for the bankroll
+Where'd the hate go? It's just you and me
+I don't wanna make love, I just want a Ksubi girl
+Why you sue me? Girl
+Is this a robbery?
+Just come vibe with me
+But don't die for me
+Away I go and I fall
+Away I go and I fall
+No way I cannot give up
+No way I cannot give up
+Carry on, let it go
+Fuck a cake, I got a lot of options
+Sold my soul at Barney I was 13, look at progress
+They like why you smoke so loud, now I gotta deal with nonsense
+Turn your speaker up
+You can't beat around the bush, you gotta make a change
+Tell bro keep it straight
+We gon' laugh it off till bank
+You gotta laugh it off or face the mirror`
+      }
+    ];
+
+    const tracklist = document.getElementById("tracklist");
+    const home = document.getElementById("home");
+    const lyricsView = document.getElementById("lyricsView");
+    const songTitle = document.getElementById("songTitle");
+    const lyricsText = document.getElementById("lyricsText");
+
+    songs.forEach((song, index) => {
+      const button = document.createElement("button");
+      button.className = "track";
+      button.textContent = `${String(index + 1).padStart(2, "0")}   ${song.title}`;
+      button.onclick = () => openSong(song);
+      tracklist.appendChild(button);
+    });
+
+    function openSong(song) {
+      home.style.display = "none";
+      lyricsView.style.display = "block";
+      songTitle.textContent = song.title;
+
+      lyricsText.textContent = song.lyrics
+        .split("\n")
+        .map(line => line.trim())
+        .filter(line => line.length > 0)
+        .join("\n\n");
+
+      window.scrollTo(0, 0);
+    }
+
+    function goBack() {
+      lyricsView.style.display = "none";
+      home.style.display = "block";
+      window.scrollTo(0, 0);
+    }
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        goBack();
+      }
+    });
+  </script>
+</body>
+</html>
